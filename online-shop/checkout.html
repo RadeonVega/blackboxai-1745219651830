@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Online Shop - Checkout</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <header class="bg-white shadow">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold text-indigo-600">OnlineShop</a>
+      <nav class="space-x-6">
+        <a href="index.html" class="text-gray-700 hover:text-indigo-600 transition">Home</a>
+        <a href="products.html" class="text-gray-700 hover:text-indigo-600 transition">Products</a>
+        <a href="cart.html" class="text-gray-700 hover:text-indigo-600 transition">
+          <i class="fas fa-shopping-cart"></i> Cart
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-12 max-w-3xl">
+    <h1 class="text-3xl font-extrabold mb-8">Checkout</h1>
+    <div id="orderSummary" class="mb-8 bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+      <div id="cartItems" class="space-y-4"></div>
+      <p class="text-right font-bold text-lg mt-4">Total: $<span id="cartTotal">0.00</span></p>
+    </div>
+
+    <form id="checkoutForm" class="bg-white rounded-lg shadow p-6 space-y-6">
+      <h2 class="text-xl font-bold mb-4">Your Details</h2>
+      <div>
+        <label for="name" class="block font-semibold mb-1">Name</label>
+        <input type="text" id="name" name="name" required class="w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <div>
+        <label for="email" class="block font-semibold mb-1">Email</label>
+        <input type="email" id="email" name="email" required class="w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <div>
+        <label for="address" class="block font-semibold mb-1">Address</label>
+        <textarea id="address" name="address" required class="w-full border border-gray-300 rounded px-3 py-2" rows="3"></textarea>
+      </div>
+      <div>
+        <label for="payment" class="block font-semibold mb-1">Payment Info</label>
+        <input type="text" id="payment" name="payment" placeholder="Card number (demo only)" required class="w-full border border-gray-300 rounded px-3 py-2" />
+      </div>
+      <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded hover:bg-indigo-700 transition">Place Order</button>
+    </form>
+
+    <div id="thankYouMessage" class="hidden text-center mt-8 p-6 bg-green-100 border border-green-400 rounded text-green-700 font-bold">
+      Thank you for your order! We will process it shortly.
+    </div>
+  </main>
+
+  <footer class="bg-white border-t mt-12 py-6">
+    <div class="container mx-auto px-4 text-center text-gray-600">
+      &copy; 2024 OnlineShop. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartItemsContainer = document.getElementById('cartItems');
+      cartItemsContainer.innerHTML = '';
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="text-gray-600">Your cart is empty.</p>';
+        document.getElementById('cartTotal').textContent = '0.00';
+        return;
+      }
+
+      cart.forEach(item => {
+        total += item.price * item.quantity;
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'flex justify-between';
+
+        itemDiv.innerHTML = `
+          <span>${item.product} x ${item.quantity}</span>
+          <span>$${(item.price * item.quantity).toFixed(2)}</span>
+        `;
+
+        cartItemsContainer.appendChild(itemDiv);
+      });
+
+      document.getElementById('cartTotal').textContent = total.toFixed(2);
+    }
+
+    document.getElementById('checkoutForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      // In a real app, here you would send the order data to the server
+
+      // Clear cart
+      localStorage.removeItem('cart');
+
+      // Hide form and order summary, show thank you message
+      document.getElementById('checkoutForm').classList.add('hidden');
+      document.getElementById('orderSummary').classList.add('hidden');
+      document.getElementById('thankYouMessage').classList.remove('hidden');
+    });
+
+    // Initial render
+    renderCart();
+  </script>
+</body>
+</html>
